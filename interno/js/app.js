@@ -70,7 +70,11 @@ function processarMensagem() {
 
   // Tenta achar um telefone no meio do texto (o cliente às vezes deixa junto
   // do documento). Se não achar, o campo fica em branco pra preencher à mão.
-  const telefoneMatch = texto.match(/\(?\d{2}\)?[\s.-]?9?\d{4}[\s.-]?\d{4}/);
+  // Prefere a linha "Telefone: ..." que o catálogo já manda; se não tiver, procura um número solto.
+  const telefoneRotulado = texto.match(/Telefone:\s*([^\n]+)/i);
+  const telefoneMatch = telefoneRotulado
+    ? [telefoneRotulado[1].trim()]
+    : texto.match(/\(?\d{2}\)?[\s.-]?9?\d{4}[\s.-]?\d{4}/);
   const telefone = telefoneMatch ? telefoneMatch[0].trim() : "";
 
   // Tudo entre "para os seguintes equipamentos:" e "Pode me ajudar?" (ou o resto do texto)
